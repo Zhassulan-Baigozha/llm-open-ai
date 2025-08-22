@@ -7,7 +7,7 @@ import { joinClasses } from "~/utils/joinClasses";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const API_BASE = "http://localhost:3001"; // поменяй на свой порт/домен при необходимости
+const API_BASE = "http://localhost:3001";
 
 export default function HomePage() {
   const [prompt, setPrompt] = useState("");
@@ -20,6 +20,15 @@ export default function HomePage() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, pending]);
 
+  // 🔥 авто-рост textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // сброс
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px"; // подгон
+    }
+  }, [prompt]);
+
   const send = async () => {
     const text = prompt.trim();
     if (!text || pending) return;
@@ -29,7 +38,7 @@ export default function HomePage() {
     setPending(true);
 
     try {
-      const res = await fetch(`${API_BASE}/chat`, {
+      const res = await fetch(API_BASE + "/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: text }),
@@ -38,6 +47,7 @@ export default function HomePage() {
       const answer = (data?.answer as string) ?? "Не удалось получить ответ.";
       setMessages((prev) => [...prev, { role: "assistant", content: answer }]);
     } catch (e) {
+      console.error(e);
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "Ошибка запроса к бэкенду." },
@@ -113,7 +123,6 @@ export default function HomePage() {
               aria-label="Отправить"
               title="Отправить (Enter)"
             >
-              {/* Бумажный самолётик — inline SVG */}
               <svg
                 className={styles.sendIcon}
                 viewBox="0 0 24 24"

@@ -3,6 +3,7 @@ import "dotenv/config";
 import express, { Request, Response } from "express";
 import OpenAI from "openai";
 import { llmConfig } from "./config/llm";
+import cors from "cors";
 
 const app = express();
 const port: number = 3001;
@@ -10,6 +11,15 @@ const port: number = 3001;
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+// Разрешаем запросы с фронта
+app.use(
+  cors({
+    origin: "*", // можно "*" если пока не критично
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
 // Для работы с JSON в POST-запросах
 app.use(express.json());
