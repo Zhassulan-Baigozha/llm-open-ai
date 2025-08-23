@@ -1,4 +1,4 @@
-// fineTune.js
+// fineTune.ts
 import fs from "fs";
 import OpenAI from "openai";
 import dotenv from "dotenv";
@@ -12,7 +12,7 @@ if (!process.env.OPENAI_API_KEY) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-async function main() {
+async function main(): Promise<void> {
   try {
     // Загружаем файл для fine-tune
     const file = await openai.files.create({
@@ -23,15 +23,19 @@ async function main() {
     console.log("Файл загружен:", file.id);
 
     // Создаём fine-tune
-    const fineTune = await openai.fineTunes.create({
+    const fineTuneJob = await openai.fineTuning.jobs.create({
       training_file: file.id,
-      model: "curie",
+      model: "gpt-3.5-turbo",
     });
 
-    console.log("Fine-tune создан:", fineTune.id);
-    console.log("Статус:", fineTune.status);
-  } catch (err) {
-    console.error("Ошибка:", err);
+    console.log("Fine-tune создан:", fineTuneJob.id);
+    console.log("Статус:", fineTuneJob.status);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Ошибка:", err.message);
+    } else {
+      console.error("Неизвестная ошибка:", err);
+    }
   }
 }
 
