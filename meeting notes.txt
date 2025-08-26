@@ -1,0 +1,19 @@
+RAG 
+1. Нужен postgre
+2. pgvector который добавляет тип vector 
+3. 2 таблицы chunks_tb and embeddings_tb 
+4. заливаем данные(json) по 500-1000 токенов
+5. создаем embeddings  openai.embeddings.create и заливаем в базу 
+6. получаем запрос с фронта, берем text/body из тела запроса
+7. создаем embeddings  openai.embeddings.create 
+8. делаем векторный поиск, сравниваем с базой embeddings_tb, и возвращаем данные из chunks_tb
+
+Fine tunning 
+1. готовим jsonl
+2. openai.fine_tunning.create 
+3. https://platform.openai.com/finetune/ftjob-svwvfMeuAwufy2laajaYiTIN?filter=all job running
+4. model id ставим как модель нашего LLM 
+
+
+RAG = база + эмбеддинги, легко обновлять данные, LLM гибко подхватывает новые тексты.
+Fine-Tuning = модель реально переучивается, но данные "зашиваются" внутрь → не обновляемо без повторного обучения.
