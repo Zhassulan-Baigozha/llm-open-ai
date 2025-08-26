@@ -39,7 +39,8 @@ app.post("/chat", async (req: Request, res: Response) => {
     }
 
     const response = await client.responses.create({
-      model: "gpt-5-nano",
+      // model: "gpt-5-nano",
+      model: "ft:gpt-3.5-turbo-0125:personal::C7SiLid6",
       input: [
         { role: "system", content: llmConfig.systemPrompt },
         { role: "user", content: prompt },
